@@ -1,0 +1,14 @@
+package com.gv.web.proto;
+
+option java_package = "com.gv.web.proto";
+option java_outer_classname = "FlightProto";
+
+message Flight {
+    
+    required string airlineCode = 1;
+    required string fltNumber = 2;
+    required string engineType = 3;
+    required int32 id = 4;
+    
+}
+

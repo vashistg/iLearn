@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lazy Loading Page</title>
+    <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script type="text/javascript">
+        var stompClient = null; 
+        
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('calculationDiv').style.visibility = connected ? 'visible' : 'hidden';
+            document.getElementById('calResponse').innerHTML = '';
+        }
+        
+        function connect() {
+            var socket = new SockJS('/iLearn/rxSearch');
+            var headers = {
+            	      'server': 'gv-server'
+            	    };
+			stompClient = Stomp.over(socket);
+            stompClient.connect(headers, function(frame) {
+                setConnected(true);
+                console.log('Connected gv: ' + frame);
+                stompClient.subscribe('/queue/showFlights', function(calResult){
+                	showResult(calResult.body);
+                });
+            });
+        }
+        
+        function disconnect() {
+            stompClient.disconnect();
+            setConnected(false);
+            console.log("Disconnected");
+        }
+        
+        function getFlights() {
+            stompClient.send("/iLearn/rxSearch", {});
+        }
+        
+        function showResult(message) {
+            var response = document.getElementById('calResponse');
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.innerHTML= message;
+            response.appendChild(p);
+        }
+    </script>
+</head>
+<body>
+<h1>Lazy Loaded Page as and when the response comes.</h1>
+<div>
+    <div>
+        <button id="connect" onclick="connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button><br/><br/>
+    </div>
+    <div id="calculationDiv">
+        <button id="sendNum" onclick="getFlights();">Send to Add</button>
+        <p id="calResponse"></p>
+    </div>
+</div>
+</body>
+</html> 

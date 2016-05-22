@@ -1,0 +1,64 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/websocket
+        http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+		 
+	 <context:component-scan base-package="com.gv.web.iLearn.controller" />
+	 <mvc:resources mapping="/resources/**" location="/resources/" />
+	 
+	 <websocket:message-broker application-destination-prefix="/iLearn">
+	      <websocket:stomp-endpoint path="/add,/rxSearch">
+                <websocket:sockjs/>
+         </websocket:stomp-endpoint>
+        <websocket:simple-broker prefix="/topic,/queue"/>
+	 </websocket:message-broker>
+	 
+	
+	 <bean class="com.mangofactory.swagger.configuration.DocumentationConfig" />
+     <context:property-placeholder location="classpath:/swagger.properties" />
+	
+	<mvc:annotation-driven>
+			<mvc:async-support default-timeout="30000" task-executor="gvExecutor"/>
+	</mvc:annotation-driven>
+	
+    <bean id="gvExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+       <property name="corePoolSize" value="5"/>
+       <property name="maxPoolSize" value="5"/>
+       <property name="queueCapacity" value="5"/>
+       <property name="keepAliveSeconds" value="5"/>
+    </bean>
+
+   <bean id="viewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+     <property name="prefix" value="/WEB-INF/"/>
+     <property name="suffix" value=".jsp"/>
+  </bean>
+  
+  <bean id="flightService" class="com.gv.web.iLearn.service.impl.FlightServiceAPI"/>
+
+  <bean id="hijackAfterMethodBean" class="com.gv.web.iLearn.annotation.AfterHijacker" />
+  <bean id="hijackBeforeMethodBean" class="com.gv.web.iLearn.annotation.BeforeHijacker" />
+  <bean id="hijackAroundMethodBean" class="com.gv.web.iLearn.annotation.HijackAroundMethod"/>
+ 
+  <bean id="flightServiceProxy" 
+                class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="flightService" />
+		<property name="interceptorNames">
+			<list>
+				<value>hijackAfterMethodBean</value>
+				<value>hijackBeforeMethodBean</value>
+				<value>hijackAroundMethodBean</value>
+			</list>
+		</property>
+  </bean>
+</beans>

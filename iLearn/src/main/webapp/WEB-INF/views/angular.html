@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+</head>
+
+<body ng-app="myapp">
+
+
+<div ng-controller="HelloController" >
+
+    <h2 ng-if="turn">Hello {{helloTo.title}} !</h2>
+	<h2 ng-if="!turn">Hello {{helloTo.title2}} !</h2>
+	<h1 ng-click="toggleButton();"> Click me to toggle </h1>
+	
+	<label>Filter: <input ng-model="searchText"></label>
+	<div ng-repeat="emp in employees | filter:searchText">
+		<p>{{emp.name}}  {{ emp.id}}</p>
+	</div>
+	
+	<h1 ng-click="addEmployee();">Add GV</h1>
+	<h1 ng-click="removeEmployee();">Remove employee</h1>
+
+</div>
+
+
+<script>
+angular.module("myapp", [])
+    .controller("HelloController", function($scope) {
+        $scope.helloTo = {};
+        $scope.helloTo.title = "World, Tree";
+		$scope.helloTo.title2 = "World, List";
+		$scope.turn=false;
+		$scope.searchText="";
+		
+		$scope.toggleButton = function(){
+				$scope.turn = !$scope.turn ;
+		}
+		
+		$scope.addEmployee = function(){
+				var employee ={};
+				employee.name="gaurav";
+				employee.id = "1";
+				$scope.employees.push(employee);
+		}
+		
+		$scope.removeEmployee = function(){
+				var employee ={};
+				employee.name="gaurav";
+				employee.id = "1";
+				$scope.employees.pop();
+		}
+		
+		$scope.employees =[{"name":"shagun","id":"123"},{"name":"shaggy","id":"98"},{"name":"gauri","id":"65"},{"name":"gaurav","id":"23"}];
+		
+    } );
+	
+	toggleButton = function(){
+				$scope.turn = false ;
+	}
+	
+</script>
+
+
+
+</body>
+
+</html>
