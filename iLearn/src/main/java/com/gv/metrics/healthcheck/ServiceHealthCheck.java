@@ -9,7 +9,7 @@ import com.gv.web.iLearn.service.impl.FlightServiceAPI;
 
 public class ServiceHealthCheck extends HealthCheck{
 
-	
+
 	FlightServiceAPI api =  new FlightServiceAPI();
 	@Override
 	protected Result check() throws Exception {
@@ -21,5 +21,4 @@ public class ServiceHealthCheck extends HealthCheck{
 		}
 		return Result.unhealthy("API is not responding. Please check.");
 	}
-
 }

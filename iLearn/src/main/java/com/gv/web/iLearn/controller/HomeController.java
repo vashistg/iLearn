@@ -35,6 +35,8 @@ import com.gv.web.iLearn.pojo.SearchRequest;
 import com.gv.web.iLearn.pojo.SearchResponse;
 import com.gv.web.iLearn.service.FlightService;
 import com.gv.web.iLearn.service.impl.FlightServiceAPI;
+import com.wordnik.swagger.annotations.ApiOperation;
+
 import rx.Observable;
 import rx.Subscriber;
 
@@ -154,9 +156,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/propertyFromURL")
 	public @ResponseBody String callableAPI(String keyName, HttpServletResponse response) throws IOException {
-		/**
-		 * Use this as
-		 */
+	
 		cfg = ConfigCache.getOrCreate(PropertyConfigurer.class);
 		System.out.println(cfg);
 		return "Server " + cfg.hostname() + ":" + cfg.port() + " will run " + cfg.maxThreads()
@@ -164,6 +164,7 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/reloadProperty")
+	@ApiOperation(value="reloads the properties of the code")
 	public @ResponseBody String reloadProperties(HttpServletResponse response) throws IOException {
 		PropertyConfigurer cfg = ConfigCache.getOrCreate(PropertyConfigurer.class);
 		PropertyConfigurer cfg1 = ConfigFactory.create(PropertyConfigurer.class);

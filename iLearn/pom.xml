@@ -67,6 +67,12 @@
 			<version>0.9.2</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.github.lukehutch</groupId>
+			<artifactId>fast-classpath-scanner</artifactId>
+			<version>1.2</version>
+		</dependency>
+
 
 
 		<!-- Servlet Spec -->
